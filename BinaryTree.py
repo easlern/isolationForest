@@ -37,16 +37,21 @@ class Node:
         return locationAsArray[self._depth % self._dimensions]
 
     def _shouldUseLeft(self, locationAsArray):
-        return self._getDimensionValueToUseForThisDepth(locationAsArray) <= self._partitionValue
+        # print('partition value is ' + str(self._partitionValue))
+        # print('locationAsArray is ' + str(locationAsArray))
+        value = self._getDimensionValueToUseForThisDepth(locationAsArray)
+        return value <= self._partitionValue
 
-    def _createNodeFromLeaf(self, leaf):
+    def _createNodeFromLeaf(self, leaf, partitionValue):
         node = Node(self._dimensions, self._depth+1)
+        node._partitionValue = partitionValue
         node.add(leaf.LocationAsArray, leaf.Item)
         return node
 
     def _addItem(self, branch, locationAsArray, item):
         if isinstance(branch, Leaf):
-            branch = self._createNodeFromLeaf(branch)
+            halfway = (self._getDimensionValueToUseForThisDepth(locationAsArray) + self._getDimensionValueToUseForThisDepth(branch.LocationAsArray)) / 2.0
+            branch = self._createNodeFromLeaf(branch, halfway)
         if branch is None:
             branch = Leaf()
         branch.add(locationAsArray, item)
