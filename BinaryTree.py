@@ -37,8 +37,6 @@ class Node:
         return locationAsArray[self._depth % self._dimensions]
 
     def _shouldUseLeft(self, locationAsArray):
-        # print('partition value is ' + str(self._partitionValue))
-        # print('locationAsArray is ' + str(locationAsArray))
         value = self._getDimensionValueToUseForThisDepth(locationAsArray)
         return value <= self._partitionValue
 
