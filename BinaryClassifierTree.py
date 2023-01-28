@@ -5,6 +5,7 @@ class Leaf:
     def __init__(self, locationAsArray, item):
         self.LocationAsArray = locationAsArray
         self.Item = item
+        self.Depth = None
 
 
 class Node:
@@ -16,6 +17,7 @@ class Node:
         self._right = None
         self._partitionValue = None
         self._add(leaves)
+        self._id = self._randomGenerator.getrandbits(64)
 
     def getLeaves(self):
         leaves = []
@@ -26,11 +28,15 @@ class Node:
                 leaves.extend(n.getLeaves())
         return leaves
 
+    def countLeaves(self):
+        return len(self.getLeaves())
+
     def _add(self, leaves):
         minValue = min(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves))
         maxValue = max(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves))
         partitionValue = self._randomGenerator.uniform(minValue, maxValue)
         self._partitionValue = partitionValue
+        # print('min ' + str(minValue) + ' max ' + str(maxValue) + ' partition ' + str(partitionValue))
         lefts = list()
         rights = list()
         for l in leaves:
@@ -41,6 +47,7 @@ class Node:
 
         def _addBranch(leavesList):
             if len(leavesList) == 1:
+                leavesList[0].Depth = self._depth
                 return leavesList[0]
             if len(leavesList) > 1:
                 node = Node(self._dimensions, self._depth+1, self._randomGenerator, leavesList)
@@ -71,3 +78,6 @@ class BinaryClassifierTree:
 
     def getLeaves(self):
         return self._rootNode.getLeaves()
+
+    def countLeaves(self):
+        return self._rootNode.countLeaves()
