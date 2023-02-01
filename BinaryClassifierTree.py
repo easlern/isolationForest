@@ -31,11 +31,35 @@ class Node:
     def countLeaves(self):
         return len(self.getLeaves())
 
-    def _add(self, leaves):
+    def _getPartitionValue(self, leaves):
+        return self._getPartitionValueUsingRandomStrategy(leaves)
+
+    def _getPartitionValueUsingDensityStrategy(self, leaves):
+        if len(leaves) == 2:
+            return None
+        assert(len(leaves) > 2)
+
+        leaves.sort(key=lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray))
+
+        def getDensity(l):
+            start = self._getDimensionValueToUseForThisDepth(l[0].LocationAsArray)
+            end = self._getDimensionValueToUseForThisDepth(l[-1].LocationAsArray)
+            width = end - start
+            return len(l)*1.0 / width
+
+        for count in range(1, len(leaves)-1):
+            r = getDensity(leaves[:count]) / getDensity(leaves[count:])
+
+    def _getPartitionValueUsingRandomStrategy(self, leaves):
         minValue = min(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves))
         maxValue = max(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves))
+        # Instead of partitioning by a random value, try to find a partition that increases the ratio of number of
+        # points beyond a certain threshold?
         partitionValue = self._randomGenerator.uniform(minValue, maxValue)
-        self._partitionValue = partitionValue
+        return partitionValue
+
+    def _add(self, leaves):
+        self._partitionValue = self._getPartitionValue(leaves)
         # print('min ' + str(minValue) + ' max ' + str(maxValue) + ' partition ' + str(partitionValue))
         lefts = list()
         rights = list()
