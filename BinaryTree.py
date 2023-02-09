@@ -1,11 +1,4 @@
-class Leaf:
-    def __init__(self):
-        self.LocationAsArray = None
-        self.Item = None
-
-    def add(self, locationAsArray, item):
-        self.LocationAsArray = locationAsArray
-        self.Item = item
+from Leaf import *
 
 
 class Node:
@@ -51,8 +44,9 @@ class Node:
             halfway = (self._getDimensionValueToUseForThisDepth(locationAsArray) + self._getDimensionValueToUseForThisDepth(branch.LocationAsArray)) / 2.0
             branch = self._createNodeFromLeaf(branch, halfway)
         if branch is None:
-            branch = Leaf()
-        branch.add(locationAsArray, item)
+            branch = Leaf(locationAsArray, item)
+        else:
+            branch.add(locationAsArray, item)
         return branch
 
 

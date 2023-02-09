@@ -59,11 +59,6 @@ class MyTestCase(unittest.TestCase):
     def leavesListToString(self, leavesList):
         return str(list(map(lambda l: str(l.LocationAsArray) + ' ' + str(l.Item) + ' depth ' + str(l.Depth), leavesList)))
 
-    def assertSame(self, expect, got):
-        if str(expect) != str(got):
-            print('Expect: ' + str(expect) + '. Got: ' + str(got))
-        assert str(expect) == str(got)
-
 
 if __name__ == '__main__':
     unittest.main()
