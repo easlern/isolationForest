@@ -29,7 +29,10 @@ class Node:
         return groups
 
     def _getPartitionValue(self, leaves):
-        return DensityStrategyFunctions.getPartition(list(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves)))
+        partitionPoint = DensityStrategyFunctions.getPartition(list(map(lambda l: self._getDimensionValueToUseForThisDepth(l.LocationAsArray), leaves)))
+        if partitionPoint is None:
+            return None
+        return self._getDimensionValueToUseForThisDepth(leaves[partitionPoint].LocationAsArray)
 
     def _add(self, leaves):
         if len(leaves) < 1:
@@ -59,7 +62,7 @@ class Node:
 
     def _shouldUseLeft(self, locationAsArray):
         value = self._getDimensionValueToUseForThisDepth(locationAsArray)
-        return value <= self._partitionValue
+        return value < self._partitionValue
 
 
 class BinaryDensityClassifierTree:
